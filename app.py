@@ -10,7 +10,7 @@ def webhook():
         git = repo.git
         git.checkout('main')
         git.stash()
-        git.pull(rebase=True)
+        git.pull('origin', 'main', rebase=True)
         return '', 200
     else:
         return '', 400
