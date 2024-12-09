@@ -23,5 +23,5 @@ def index():
 def game(name):
     return render_template(f'games/{name}.html') 
 
-if __name__=='__main__':
-    app.run(debug=True)
+# if __name__=='__main__':
+#     app.run(debug=True)
