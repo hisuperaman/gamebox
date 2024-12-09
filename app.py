@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        repo = Repo('./gamebox')
+        repo = Repo('.')
         git = repo.git
         git.checkout('main')
         git.pull()
