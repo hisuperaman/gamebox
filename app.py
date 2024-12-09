@@ -1,16 +1,15 @@
 from flask import Flask, render_template, redirect, request, url_for
-import git
+from git import Repo
 
 app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        repo = git.Repo('./gamebox')
-        origin = repo.remotes.origin
-        repo.create_head('main', 
-    origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
-        origin.pull()
+        repo = Repo('./gamebox')
+        git = repo.git
+        git.checkout('main')
+        git.pull()
         return '', 200
     else:
         return '', 400
