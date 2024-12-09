@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+{% endblock stylesheet %}
+
+{% block body %}
+<div class="container text-center">
+  <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+
+    
+    <div class="col" onclick="game_btn('dodge_racing_2')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/dodge_racing_2.png')}}" class="img-thumbnail" alt="dodge_racing_2">
+        <h3>Dodge Racing 2</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('self_driving_car')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/self_driving_car.png')}}" class="img-thumbnail" alt="self_driving_car">
+        <h3>Self Driving Car</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('retro_shooter')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/retro_shooter.png')}}" class="img-thumbnail" alt="retro_shooter">
+        <h3>Retro Shooter</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('stick_hero')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/stick_hero.png')}}" class="img-thumbnail" alt="stick_hero">
+        <h3>Stick Hero</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('flappy_bird')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/flappy_bird.jpg')}}" class="img-thumbnail" alt="flappy_bird">
+        <h3>Flappy Bird</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('dodge_racing')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/dodge_racing.png')}}" class="img-thumbnail" alt="dodge_racing">
+        <h3>Dodge Racing</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('tic_tac_toe_new')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/tic_tac_toe_new.png')}}" class="img-thumbnail"
+          alt="tic_tac_toe_new">
+        <h3>Tic Tac Toe (New)</h3>
+      </div>
+    </div>
+
+    <div class="col" onclick="game_btn('snake_game')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/snake_game.png')}}" class="img-thumbnail" alt="snake_game">
+        <h3>Snake Game</h3>
+      </div>
+    </div>
+
+
+    <div class="col" onclick="game_btn('tic_tac_toe')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/tic_tac_toe.png')}}" class="img-thumbnail" alt="tic_tac_toe">
+        <h3>Tic Tac Toe</h3>
+      </div>
+    </div>
+    <div class="col" onclick="game_btn('swg')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/swg.png')}}" class="img-thumbnail" alt="swg">
+        <h3>Snake Water Gun</h3>
+      </div>
+    </div>
+    
+    <div class="col" onclick="game_btn('flappy_block')">
+      <div class="p-3">
+        <img src="{{url_for('static', filename='images/flappy_block.png')}}" class="img-thumbnail" alt="flappy_block">
+        <h3>Flappy Block</h3>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="{{url_for('static', filename='js/index.js')}}"></script>
+{% endblock body %}

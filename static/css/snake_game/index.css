@@ -1,0 +1,140 @@
+body{
+    margin: 0;
+}
+
+.canvas{
+    background-color: #223241;
+    background-size: 100vw 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+#box{
+    display: grid;
+    grid-template-rows: repeat(18, 1fr);
+    grid-template-columns: repeat(18, 1fr);
+    background-color: #2e5375;
+    width: 90vmin;
+    height: 90vmin;
+    border: 2px solid white;
+}
+
+.head{
+    background-color: darkblue;
+}
+
+.food{
+    background-color: red;
+    border-radius: 30%;
+}
+
+.head, .tail, .food{
+    border: 2px solid white;
+}
+
+.tail{
+    background-color: blue;
+}
+
+.scores{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    margin: 0.5%;
+}
+
+#scoreBox, #highscoreBox{
+    color: white;
+    font-family:'Times New Roman', Times, serif;
+    font-size: 6vmin;
+}
+
+#playBtn{
+    background-color: rgb(53, 53, 53);
+    padding: 2%;
+    border: 2px solid white;
+    border-radius: 10%;
+    color: white;
+    font-family: sans-serif;
+    font-size: 8vmin;
+    cursor: default;
+    text-align: center;
+    width: 100%;
+}
+
+#playBtn:hover{
+    cursor: pointer;
+    background-color: rgb(74, 74, 74);
+}
+
+#gameControl{
+    position: absolute;
+    top: 50vmin;
+    display: flex;
+    flex-direction: column;
+}
+
+#gameoverDisplay{
+    display: none;
+    color: red;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+    font-weight: bolder;
+    font-family: sans-serif;
+    font-size: 6vmin;
+    cursor: default;
+}
+
+#playBtn:active{
+    background-color: rgb(56, 56, 56);
+}
+
+#instructions{
+    display: none;
+    position: absolute;
+    top: 50vmin;
+    background-color: blue;
+    color: white;
+    font-family: fantasy;
+    word-spacing: 1vmin;
+    font-size: 4vmin;
+}
+
+#gameControls{
+    display: none;
+    color: white;
+    flex-direction: column;
+    gap: 2px;
+}
+
+#upkey{
+    width: 32%;
+    margin: 0 auto;
+}
+
+.controlItems{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(74, 74, 255);
+    padding: 2px;
+    height: 10vh;
+    width: 20vw;
+    cursor: pointer;
+    font-size: 6vmin;
+}
+
+.secondRow{
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+@media (max-width: 768px) {
+    #gameControls{
+        display: flex;
+    }
+}

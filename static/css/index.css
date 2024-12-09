@@ -1,0 +1,8 @@
+.col{
+    cursor: default;
+}
+
+.col:hover{
+    cursor: pointer;
+    background-color: rgb(26, 26, 26);
+}

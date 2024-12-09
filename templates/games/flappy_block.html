@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Block</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/flappy_block/index.css')}}">
+</head>
+<body>
+    <div class="canvas">
+        <div id="scores">
+            <div id="highscoreBox">Highscore: <span id="highscore_display">0</span></div>
+            <div id="scoreBox">Score: <span id="score_display">0</span></div>
+        </div>
+        <div id="box">
+        </div>
+        <div id="gameControls">
+            <div class="controlItems" onclick="moveBtn()">Fly</div>
+        </div>
+    </div>
+    <div id="instructions">Press any key to start!</div>
+    <div id="play_again" onclick="restartGame()">Play Again</div>
+
+    <script src="{{url_for('static', filename='js/flappy_block/index.js')}}"></script>
+</body>
+</html>

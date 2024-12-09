@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodge Racing 2</title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/dodge_racing_2/style.css')}}">
+</head>
+<body>
+
+    <div id="loadingScreen">
+        <div id="loader"></div>
+    </div>
+
+    <div class="canvasContainer" id="mainContent">
+        <canvas id="myCanvas"></canvas>
+
+        <canvas id="scoreBoard"></canvas>
+    </div>
+    
+    <script src="{{url_for('static', filename='js/dodge_racing_2/controls.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dodge_racing_2/road.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dodge_racing_2/car.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dodge_racing_2/button.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dodge_racing_2/utils.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dodge_racing_2/main.js')}}"></script>
+</body>
+</html>

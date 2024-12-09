@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWG</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/swg/index.css')}}">
+</head>
+<body>
+    <div id="title">
+        <h3>Welcome to Snake Water Gun!</h3>
+    </div>
+
+    <div id="intro">
+        <br>[Rounds should be between 1 and 20]
+        <br>Enter number of rounds:
+        <input type="text" inputmode="numeric" oninput="round()" id="rounds" autocomplete="off">
+        <br>
+        <input type="button" value="Next" id="next" onclick="next_page()">
+        <p id="round_err"></p>
+    </div>
+    <br>
+    <br>
+    <div id="game">
+        <div id="result">
+            <h1 style="color: blue; font-family: sans-serif;">Game Over</h1>
+            <h2>Results</h2>
+            <h3 id="result_line"></h3>
+        </div>
+
+        <div id="play_again">
+            <span id="again_btn" onclick="location.reload()">Play Again</span>
+        </div>
+
+        <div id="choices">
+            <h2>Round <span id="round_num">1</span></h2>
+            <br>
+            Select your choice: <br>
+            <span class="choice" onclick="the_game('s')">Snake</span>
+            <br>
+            <span class="choice" onclick="the_game('w')">Water</span>
+            <br>
+            <span class="choice" onclick="the_game('g')">Gun</span> 
+        </div>
+        
+        <div id="score">
+            <h2>Score</h2>
+            User: <span id="dis_usr">0</span>
+            <br>
+            CPU: <span id="dis_cpu">0</span>
+        </div>
+
+	<div id="selections">
+            <h2>Previous Round Selections</h2>
+            User: <span id="dis_usr_sel"></span>
+            <br>
+            CPU: <span id="dis_cpu_sel"></span>
+            <br>
+            <span id="dis_sel"></span>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename='js/swg/index.js')}}"></script>
+</body>
+</html>

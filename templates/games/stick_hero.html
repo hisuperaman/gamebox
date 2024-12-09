@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stick Hero</title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/stick_hero/index.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div id="loadingScreen">
+        <div id="loader"></div>
+    </div>
+
+
+    <div class="container" id="mainContent">
+        <canvas width="500" height="500" id="myCanvas"></canvas>
+    </div>
+
+    <script type="module" src="{{url_for('static', filename='js/stick_hero/main.js')}}" ></script>
+</body>
+</html>

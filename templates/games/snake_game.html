@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/snake_game/index.css')}}">
+    <link href="#" rel="icon" type="image/x-icon">
+</head>
+<body>
+    <div class="canvas">
+        <div class="scores">
+            <div id="highscoreBox">High Score: <span id="displayHighscore"></span></div>
+            <div id="scoreBox">Score: <span id="displayScore">0</span></div>
+        </div>
+        <div id="box"></div>
+        <div id="gameControl">
+            <div id="gameoverDisplay">Game Over</div>
+            <div id="playBtn" onclick="play()">Play</div>
+        </div>
+        <div id="instructions">Press any arrow key to move!</div>
+
+        <div id="gameControls">
+            <div id="upkey" class="controlItems" onclick="moveBtn.call(this)">Up</div>
+            <div class="secondRow">
+                <div id="leftkey" class="controlItems" onclick="moveBtn.call(this)">Left</div>
+                <div id="downkey" class="controlItems" onclick="moveBtn.call(this)">Down</div>
+                <div id="rightkey" class="controlItems" onclick="moveBtn.call(this)">Right</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename='js/snake_game/index.js')}}"></script>
+</body>
+</html>

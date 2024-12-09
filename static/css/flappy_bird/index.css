@@ -1,0 +1,174 @@
+body{
+    margin: 0;
+    background-color: #223241;
+    cursor: default;
+}
+
+#loadingScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+}
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+  
+#mainContent {
+    display: none; /* Hide main content initially */
+}
+
+.canvas{
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #223241;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#scores{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    margin: 0.5% 0 0.5% 0;
+}
+
+#myCanvas{
+    max-width: 90vmin;
+    max-height: 90vmin;
+    background-color: rgb(114, 114, 255);
+    border: 2px solid white;
+    overflow: hidden;
+}
+
+.bird{
+    background-color: rgb(209, 209, 1);
+    border: 2px solid white;
+}
+
+.obstacle{
+    background-color: green;
+    border: 2px solid black;
+}
+
+#play_again{
+    position: absolute;
+    top: 50vmin;
+    left: 40vw;
+    width: 20vmin;
+    /* margin: auto; */
+    background-color: rgb(66, 88, 255);
+    color: white;
+    /* width: 20vmin; */
+    text-align: center;
+    font-size: 4vmin;
+    padding: 1vmin;
+    border: 0.5vmin solid white;
+    display: none;
+}
+
+#play_again:hover{
+    cursor: pointer;
+    background-color: rgb(87, 87, 246);
+}
+
+#play_again:active{
+    background-color: rgb(60, 60, 231);
+}
+
+#scoreBox, #highscoreBox{
+    color: white;
+    font-family:'Times New Roman';
+    font-size: 6vmin;
+}
+
+#instructions{
+    display: block;
+    position: absolute;
+    top: 50vmin;
+    left: 30vw;
+    width: 42vmin;
+    text-align: center;
+    background-color: rgb(85, 85, 254);
+    color: white;
+    font-family: fantasy;
+    word-spacing: 1vmin;
+    font-size: 4vmin;
+}
+
+#gameControls{
+    display: none;
+    color: white;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.controlItems{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(74, 74, 255);
+    padding: 2px;
+    height: 10vh;
+    width: 20vw;
+    cursor: pointer;
+    font-size: 6vmin;
+}
+
+.controlItems:hover{
+    background-color: rgb(59, 59, 255);
+}
+
+.controlItems:active{
+    background-color: rgb(37, 37, 255);
+}
+
+@media (min-width: 700px){
+    #play_again{
+        left: 44vw;
+    }
+}
+
+@media (min-width: 550px){
+    #instructions{
+        left: 35vw;
+    }
+}
+
+@media (min-width: 780px) and (max-width: 980px){
+    #instructions{
+        left: 37vw;
+    }
+}
+
+@media (min-width: 980px){
+    #instructions{
+        left: 40vw;
+    }
+}
+
+@media (max-width: 768px) {
+    #gameControls{
+        display: flex;
+    }
+    #play_again{
+        top: 52vmin;
+    }
+}

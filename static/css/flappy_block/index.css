@@ -1,0 +1,136 @@
+body{
+    margin: 0;
+}
+
+.canvas{
+    background-size: 100vw 100vh;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #223241;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#scores{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    margin: 0.5% 0 0.5% 0;
+}
+
+#box{
+    width: 88vmin;
+    height: 88vmin;
+    background-color: rgb(114, 114, 255);
+    border: 2px solid white;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+}
+
+.bird{
+    background-color: rgb(209, 209, 1);
+    border: 2px solid white;
+}
+
+.obstacle{
+    background-color: green;
+    border: 2px solid black;
+}
+
+#play_again{
+    position: absolute;
+    top: 50vmin;
+    left: 40vw;
+    width: 20vmin;
+    /* margin: auto; */
+    background-color: blue;
+    color: white;
+    /* width: 20vmin; */
+    text-align: center;
+    font-size: 4vmin;
+    padding: 1vmin;
+    border: 2px solid white;
+    display: none;
+}
+
+#play_again:hover{
+    cursor: pointer;
+    background-color: rgb(44, 44, 204);
+}
+
+#play_again:active{
+    background-color: rgb(19, 19, 165);
+}
+
+#scoreBox, #highscoreBox{
+    color: white;
+    font-family:'Times New Roman';
+    font-size: 6vmin;
+}
+
+#instructions{
+    display: block;
+    position: absolute;
+    top: 50vmin;
+    left: 30vw;
+    width: 42vmin;
+    text-align: center;
+    background-color: blue;
+    color: white;
+    font-family: fantasy;
+    word-spacing: 1vmin;
+    font-size: 4vmin;
+}
+
+#gameControls{
+    display: none;
+    color: white;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.controlItems{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(74, 74, 255);
+    padding: 2px;
+    height: 10vh;
+    width: 20vw;
+    cursor: pointer;
+    font-size: 6vmin;
+}
+
+@media (min-width: 700px){
+    #play_again{
+        left: 44vw;
+    }
+}
+
+@media (min-width: 550px){
+    #instructions{
+        left: 35vw;
+    }
+}
+
+@media (min-width: 780px) and (max-width: 980px){
+    #instructions{
+        left: 37vw;
+    }
+}
+
+@media (min-width: 980px){
+    #instructions{
+        left: 40vw;
+    }
+}
+
+@media (max-width: 768px) {
+    #gameControls{
+        display: flex;
+    }
+}

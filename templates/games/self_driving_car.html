@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car</title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/self_driving_car/style.css')}}">
+</head>
+<body>
+
+    <div class="canvasContainer">
+        <canvas id="myCanvas"></canvas>
+
+    </div>
+
+    <div class="controls">
+        <button onclick="saveBestBrain()">💾</button>
+        <button onclick="clearBestBrain()">🚮</button>
+    </div>
+    
+    <script src="{{url_for('static', filename='js/self_driving_car/controls.js')}}"></script>
+    <script src="{{url_for('static', filename='js/self_driving_car/road.js')}}"></script>
+    <script src="{{url_for('static', filename='js/self_driving_car/car.js')}}"></script>
+    <script src="{{url_for('static', filename='js/self_driving_car/sensor.js')}}"></script>
+    <script src="{{url_for('static', filename='js/self_driving_car/network.js')}}"></script>
+    <script src="{{url_for('static', filename='js/self_driving_car/utils.js')}}"></script>
+    <script src="{{url_for('static', filename='js/self_driving_car/main.js')}}"></script>
+</body>
+</html>
