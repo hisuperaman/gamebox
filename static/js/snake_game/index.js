@@ -1,5 +1,5 @@
 //variables
-const targetFPS = 8;
+const targetFPS = 4;
 const targetFrameTime = 1000/targetFPS;
 
 const moveSFX = new Audio('../static/assets/snake_game/music/move.mp3');
