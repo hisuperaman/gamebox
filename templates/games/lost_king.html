@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Game</title>
+
+    <style>
+        body {
+            background-color: black;
+            box-sizing: border-box;
+            margin: 0;
+
+            display: flex;
+            justify-content: center;
+        }
+
+        #myCanvas {
+            width: 80vw;
+            height: 100vh;
+        }
+
+        #landscape-warning {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 24px;
+            z-index: 9999;
+        }
+
+        #joystick-container {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            width: 200px;
+            height: 200px;
+        }
+
+
+        #loadingScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        #loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        @media screen and (max-width: 1000px) {
+            #myCanvas {
+                width: 70vw;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loadingScreen">
+        <div id="loader"></div>
+    </div>
+
+    <canvas id="myCanvas"></canvas>
+
+    <div id="joystick-container"></div>
+    <div id="landscape-warning">Please switch to landscape mode for the best experience.</div>
+
+    <script>
+        function isTouchable() {
+            return (
+                'ontouchstart' in window ||
+                navigator.maxTouchPoints > 0 ||
+                navigator.msMaxTouchPoints > 0 ||
+                window.matchMedia('(pointer: coarse)').matches
+            );
+        }
+
+        function checkOrientation() {
+            const joystickContainer = document.getElementById('joystick-container');
+            const safeArea = window.visualViewport.height - document.documentElement.clientHeight;
+            // this 30 is the bottom of joystickContainer
+            const bottom = 30 - safeArea
+            joystickContainer.style.bottom = `${bottom}px`;
+
+            if (!isTouchable()) {
+                joystickContainer.style.display = 'none';
+            }
+
+            const warning = document.getElementById('landscape-warning');
+            if (window.innerHeight > window.innerWidth) {
+                warning.style.display = 'flex';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.2/nipplejs.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="{{url_for('static', filename='js/lost_king/index.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/utils.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/Sprite.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/CollisionBlock.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/data/collisions.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/Game.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/Controls.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/Player.js')}}"></script>
+</body>
+
+</html>
