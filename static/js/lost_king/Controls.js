@@ -5,14 +5,17 @@ class Controls {
         this.left = false;
         this.right = false;
 
-        this.spaceHit = false;
+        this.action = false;
 
         this.joystick = nipplejs.create({
             zone: document.getElementById('joystick-container'),
             mode: 'static',
             position: { left: '100px', bottom: '40px' },
-            color: 'white'
+            color: 'white',
         });
+
+        this.actionButton = document.getElementById('actionButton');
+        this.jumpButton = document.getElementById('jumpButton');
 
         this.#addKeyboardControls();
 
@@ -22,7 +25,7 @@ class Controls {
     #addTouchControls() {
         this.joystick.on('move', (evt, data) => {
             if (data.direction) {
-                if (data.direction.angle === 'up') this.up = true;
+                if (data.direction.angle === 'up') null;
                 else this.up = false;
                 if (data.direction.angle === 'down') this.down = true;
                 else this.down = false;
@@ -33,11 +36,24 @@ class Controls {
             }
         });
 
-        this.joystick.on('end', ()=> {
+        this.joystick.on('end', () => {
             this.up = false;
             this.down = false;
             this.left = false;
             this.right = false;
+        })
+
+        this.actionButton.addEventListener('pointerdown', (e) => {
+            this.action = true;
+        })
+        this.actionButton.addEventListener('pointerup', (e) => {
+            this.action = false;
+        })
+        this.jumpButton.addEventListener('pointerdown', (e) => {
+            this.up = true;
+        })
+        this.jumpButton.addEventListener('pointerup', (e) => {
+            this.up = false;
         })
     }
 
@@ -59,7 +75,7 @@ class Controls {
                     this.right = true;
                     break;
                 case 'Space':
-                    this.spaceHit = true;
+                    this.action = true;
                     break;
                 default:
                     break;
@@ -82,7 +98,7 @@ class Controls {
                     this.right = false;
                     break;
                 case 'Space':
-                    this.spaceHit = false;
+                    this.action = false;
                     break;
                 default:
                     break;

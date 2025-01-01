@@ -16,6 +16,8 @@
 
             display: flex;
             justify-content: center;
+
+            user-select: none;
         }
 
         #myCanvas {
@@ -82,6 +84,29 @@
             }
         }
 
+        .controlButton {
+            all: unset;
+            position: absolute;
+            background-color: rgba(161, 161, 161, 0.8);
+            width: 4rem;
+            height: 4rem;
+            text-align: center;
+            border-radius: 100%;
+        }
+
+        #actionButton {
+            right: 80px;
+            bottom: 60px;
+        }
+
+        #jumpButton {
+            right: 150px;
+            bottom: 30px;
+        }
+
+        .controlButton:active {
+            filter: brightness(110%);
+        }
 
         @media screen and (max-width: 1000px) {
             #myCanvas {
@@ -103,6 +128,9 @@
     <div id="joystick-container"></div>
     <div id="landscape-warning">Please switch to landscape mode for the best experience.</div>
 
+    <button class="controlButton" id="actionButton">A</button>
+    <button class="controlButton" id="jumpButton">J</button>
+
     <script>
         function isTouchable() {
             return (
@@ -115,13 +143,23 @@
 
         function checkOrientation() {
             const joystickContainer = document.getElementById('joystick-container');
+            const actionButton = document.getElementById('actionButton');
+            const jumpButton = document.getElementById('jumpButton');
+
             const safeArea = window.visualViewport.height - document.documentElement.clientHeight;
             // this 30 is the bottom of joystickContainer
             const bottom = 30 - safeArea
             joystickContainer.style.bottom = `${bottom}px`;
 
+            const actionButtonBottom = 60 - safeArea
+            actionButton.style.bottom = `${actionButtonBottom}px`;
+            const jumpButtonBottom = 30 - safeArea
+            jumpButton.style.bottom = `${jumpButtonBottom}px`;
+
             if (!isTouchable()) {
                 joystickContainer.style.display = 'none';
+                actionButton.style.display = 'none';
+                jumpButton.style.display = 'none';
             }
 
             const warning = document.getElementById('landscape-warning');
@@ -140,8 +178,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="{{url_for('static', filename='js/lost_king/index.js')}}"></script>
-    <script src="{{url_for('static', filename='js/lost_king/utils.js')}}"></script>
     <script src="{{url_for('static', filename='js/lost_king/Sprite.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/Note.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/NoteScreen.js')}}"></script>
+    <script src="{{url_for('static', filename='js/lost_king/utils.js')}}"></script>
     <script src="{{url_for('static', filename='js/lost_king/CollisionBlock.js')}}"></script>
     <script src="{{url_for('static', filename='js/lost_king/data/collisions.js')}}"></script>
     <script src="{{url_for('static', filename='js/lost_king/Game.js')}}"></script>

@@ -1,5 +1,5 @@
 class Player extends Sprite {
-    constructor({ x, y, canvasSize, collisionBlocks, animations, currentAnimation, doors }) {
+    constructor({ x, y, canvasSize, collisionBlocks, animations, currentAnimation, doors, notes, pauseGame }) {
         super({ imageSrc: animations[currentAnimation]['imageSrc'], frameRate: animations[currentAnimation]['frameRate'], animations, currentAnimation })
         this.position = { x, y };
 
@@ -31,6 +31,12 @@ class Player extends Sprite {
         this.doors = doors;
 
         this.atGround = false;
+
+        this.notes = notes;
+
+        this.pauseGame = pauseGame;
+
+        this.preventNoteToggle = false;
     }
 
     update() {
@@ -47,6 +53,8 @@ class Player extends Sprite {
 
         this.#handleMovement();
 
+
+        this.#handleNoteCollision()
     }
 
     #updateHitbox() {
@@ -60,9 +68,57 @@ class Player extends Sprite {
         }
     }
 
-    #handleDoorCollision() {
+    #handleNoteCollision() {
+        for (let i = 0; i < this.notes.length; i++) {
+            const note = this.notes[i];
 
+            if (
+                isCollision(
+                    this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height,
+                    note.position.x, note.position.y, note.width, note.height
+                )
+            ) {
+                const difference = Math.abs((this.hitbox.position.x + this.hitbox.width / 2) - (note.position.x + note.width / 2));
+                const offset = 40;
+                if (
+                    difference <= offset
+                ) {
+                    note.showInteractionHint = true;
 
+                    if (this.controls.action && !this.preventNoteToggle) {
+
+                        this.#resetVelocityAndIdle();
+                        if (!note.showNoteScreen) {
+                            note.showNoteScreen = true;
+                            this.preventInput = true;
+
+                            this.preventNoteToggle = true;
+                        }
+                        else if (note.showNoteScreen) {
+                            note.showNoteScreen = false;
+                            this.preventInput = false;
+
+                            this.preventNoteToggle = true;
+                        }
+                    }
+                    if (!this.controls.action) {
+                        this.preventNoteToggle = false
+                    }
+                    break;
+                }
+            }
+            else {
+                note.showInteractionHint = false;
+                break;
+            }
+        }
+    }
+
+    #resetVelocityAndIdle() {
+        if (this.velocity.x > 0) this.switchSprite('idleRight');
+        if (this.velocity.x < 0) this.switchSprite('idleLeft');
+        this.velocity.x = 0;
+        this.velocity.y = 0;
     }
 
     #handleHorizontalCollision() {
@@ -117,7 +173,7 @@ class Player extends Sprite {
     }
 
     #handleMovement() {
-        if(this.preventInput) return;
+        if (this.preventInput) return;
 
         if (this.controls.up && this.atGround) {
             for (let i = 0; i < this.doors.length; i++) {
@@ -145,7 +201,7 @@ class Player extends Sprite {
             }
 
             this.atGround = false;
-            if (this.velocity.y == 0 && this.position.y > this.position.y-this.jumpStrength) this.velocity.y = -this.jumpStrength;
+            if (this.velocity.y == 0 && this.position.y > this.position.y - this.jumpStrength) this.velocity.y = -this.jumpStrength;
         }
 
         if (this.controls.left) {

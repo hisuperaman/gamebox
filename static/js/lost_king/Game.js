@@ -12,6 +12,7 @@ class Game {
         this.background
         this.collisionBlocks
         this.doors
+        this.notes
 
 
         this.player = new Player({
@@ -19,6 +20,7 @@ class Game {
             canvasSize: canvasSize,
             imageSrc: '../static/assets/lost_king/img/king/idle.png',
             frameRate: 11,
+            pauseGame: () => this.pauseGame(),
 
             animations: {
                 idleRight: {
@@ -51,7 +53,7 @@ class Game {
                             opacity: 1,
                             duration: 1,
                             onComplete: () => {
-                                if(this.level == Object.keys(this.levels).length) {
+                                if (this.level == Object.keys(this.levels).length) {
                                     this.level = 1;
                                 }
                                 else {
@@ -95,10 +97,20 @@ class Game {
                     })
                 ],
 
+                notes: [
+                    new Note({
+                        position: {
+                            x: 480, y: 320
+                        },
+                        imageSrc: '../static/assets/lost_king/img/note.png',
+                        canvasSize: canvasSize
+                    })
+                ],
+
                 playerPosition: {
                     x: 220,
                     y: 278
-                }   
+                }
             },
             2: {
                 background: new Sprite({
@@ -121,6 +133,8 @@ class Game {
                         autoplay: false
                     })
                 ],
+
+                notes: [],
 
                 playerPosition: {
                     x: 120,
@@ -149,6 +163,8 @@ class Game {
                     })
                 ],
 
+                notes: [],
+
                 playerPosition: {
                     x: 750,
                     y: 138
@@ -165,6 +181,8 @@ class Game {
             height: canvasSize.height,
             opacity: 0
         }
+
+        this.paused = false;
     }
 
     #initCurrentLevel() {
@@ -175,16 +193,20 @@ class Game {
         this.player.collisionBlocks = this.collisionBlocks
 
         this.doors = currentLevel.doors;
-        this.doors = this.doors.map(door=>{
+        this.doors = this.doors.map(door => {
             door.currentFrame = 0;
             door.autoplay = false;
             return door;
         })
+
+        this.notes = currentLevel.notes;
+
         this.player.doors = this.doors;
+        this.player.notes = this.notes;
 
         this.player.switchSprite('idleRight')
         this.player.position.x = currentLevel.playerPosition.x;
-        this.player.position.y   = currentLevel.playerPosition.y;
+        this.player.position.y = currentLevel.playerPosition.y;
         this.player.preventInput = false;
     }
 
@@ -215,6 +237,10 @@ class Game {
         ctx.restore();
     }
 
+    pauseGame() {
+        this.paused = true;
+    }
+
     gameEngine() {
         // update
         this.background.draw(this.ctx)
@@ -225,7 +251,15 @@ class Game {
         this.doors.forEach(door => {
             door.draw(this.ctx)
         })
+        this.notes.forEach(note => {
+            note.draw(this.ctx)
+            note.drawInteractionHint(this.ctx)
+        })
         this.player.draw(this.ctx);
+
+        this.notes.forEach(note => {
+            note.drawNoteScreen(this.ctx)
+        })
         // this.collisionBlocks.forEach(block => {
         //     block.draw(this.ctx)
         // })
