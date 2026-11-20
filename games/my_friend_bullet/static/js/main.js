@@ -18,10 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const game = new MyFriendBullet({ sounds })
 
-    // phones: fixed move stick, floating aim stick on the right half, slow-mo toggle, reload
+    // phones: floating move stick on the left half, aim stick on the right half, slow-mo toggle,
+    // reload, and a single / auto fire switch (single: drag to aim, lift to fire, tap to shoot a spot)
     const touch = new Tux.TouchControls({ input: game.input })
-    touch.addMoveStick()
-    touch.addAimStick({ hint: 'Move your thumb here<br>to aim &amp; shoot' })
+    touch.addMoveStick({
+        mode: 'floating',
+        area: { left: '0', top: '0', bottom: '0', width: '50%' },
+        hint: 'Touch anywhere here<br>to move', hintIcon: 'move', hintColor: '255, 255, 255',
+    })
+    const fireModeKey = 'my-friend-bullet-fire-mode'
+    const aimStick = touch.addAimStick({
+        fire: Tux.storage.get(fireModeKey) === 'hold' ? 'hold' : 'release',
+        hint: 'Drag here to aim<br>&amp; shoot',
+    })
     touch.addButton({
         id: 'slowmo', icon: 'hourglass', label: 'Slow motion',
         type: 'toggle', action: 'slowmo', ring: true, // tap on / tap off, ring = focus left
@@ -31,6 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'reload', icon: 'rotate-ccw', label: 'Reload',
         action: 'reload', ring: true, // ring = ammo left / reload progress
         position: { right: 60, bottom: 200 },
+    })
+    const fireIcon = (mode) => (mode === 'hold' ? 'zap' : 'crosshair')
+    touch.addButton({
+        id: 'fire-mode', icon: aimStick && fireIcon(aimStick.fire), label: 'Switch single / automatic fire',
+        position: { right: 150, bottom: 200 },
+        onPress: (button) => {
+            const mode = aimStick.fire === 'hold' ? 'release' : 'hold'
+            aimStick.setFire(mode)
+            Tux.storage.set(fireModeKey, mode)
+            button.setIcon(fireIcon(mode))
+        },
     })
     game.touch = touch
 
@@ -49,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tagline: 'Slow down time. Dance through the bullets. Survive.',
         help: [
             ['A / D', 'move'],
-            ['W / Space', 'jump (x2)'],
+            ['W / Space', 'jump · hold for x2'],
             ['S', 'drop down · fast fall'],
             ['Mouse', 'aim & shoot'],
             ['Shift / Right click', 'slow-mo'],

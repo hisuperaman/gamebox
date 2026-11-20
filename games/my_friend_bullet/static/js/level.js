@@ -11,6 +11,8 @@ class Level {
             { x: 1060, y: 220, width: 220, height: 16 },
         ]
 
+        // scenery reaches this far past the arena for wide screens (fit: 'extend')
+        this.sceneryMargin = 640
         this.skyline = this.#buildSkyline()
         this.time = 0
     }
@@ -24,8 +26,8 @@ class Level {
         const colors = ['#1b1430', '#251a3d', '#2f2049']
         for (let l = 0; l < 3; l++) {
             const buildings = []
-            let x = -40
-            while (x < WORLD.width + 40) {
+            let x = -this.sceneryMargin
+            while (x < WORLD.width + this.sceneryMargin) {
                 const width = getRandomInt(50, 130)
                 const height = getRandomInt(120, 380) - l * 70
                 const windows = []
@@ -44,14 +46,15 @@ class Level {
         return layers
     }
 
-    drawBackground(ctx) {
+    // view: the visible area in world units, can reach past the arena on each side
+    drawBackground(ctx, view) {
         // sky
         const sky = ctx.createLinearGradient(0, 0, 0, this.groundY)
         sky.addColorStop(0, '#0b0717')
         sky.addColorStop(0.6, '#3a1a4a')
         sky.addColorStop(1, '#ff6a4a')
         ctx.fillStyle = sky
-        ctx.fillRect(0, 0, WORLD.width, WORLD.height)
+        ctx.fillRect(view.x, view.y, view.width, view.height)
 
         // moon
         ctx.save()
@@ -82,13 +85,13 @@ class Level {
 
         // warehouse back wall frame
         ctx.fillStyle = 'rgba(10, 8, 20, 0.55)'
-        ctx.fillRect(0, 0, WORLD.width, 40)
-        for (let x = 0; x < WORLD.width; x += 160) {
+        ctx.fillRect(view.x, view.y, view.width, 40 - view.y)
+        for (let x = Math.floor(view.x / 160) * 160; x < view.x + view.width; x += 160) {
             ctx.fillRect(x, 0, 14, this.groundY)
         }
     }
 
-    drawForeground(ctx) {
+    drawForeground(ctx, view) {
         // platforms
         this.platforms.forEach((p) => {
             ctx.fillStyle = '#121019'
@@ -119,13 +122,14 @@ class Level {
         })
 
         // floor
+        const floorBottom = view.y + view.height
         ctx.fillStyle = '#0d0b12'
-        ctx.fillRect(0, this.groundY, WORLD.width, WORLD.height - this.groundY)
+        ctx.fillRect(view.x, this.groundY, view.width, floorBottom - this.groundY)
         ctx.fillStyle = '#e0a040'
-        ctx.fillRect(0, this.groundY, WORLD.width, 3)
+        ctx.fillRect(view.x, this.groundY, view.width, 3)
         ctx.fillStyle = 'rgba(255,255,255,0.04)'
-        for (let x = 0; x < WORLD.width; x += 64) {
-            ctx.fillRect(x, this.groundY + 3, 2, WORLD.height)
+        for (let x = Math.floor(view.x / 64) * 64; x < view.x + view.width; x += 64) {
+            ctx.fillRect(x, this.groundY + 3, 2, floorBottom - this.groundY)
         }
 
         // side doors where enemies come in

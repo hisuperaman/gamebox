@@ -3,6 +3,7 @@ class MyFriendBullet extends Tux.Game {
     constructor({ sounds, touch = null }) {
         super({
             world: WORLD,
+            fit: 'extend', // wide phones see the city around the arena instead of black bars
             bindings: {
                 left: ['KeyA', 'ArrowLeft'],
                 right: ['KeyD', 'ArrowRight'],
@@ -132,8 +133,10 @@ class MyFriendBullet extends Tux.Game {
     render(ctx) {
         const inRun = this.state !== 'menu'
 
-        this.level.drawBackground(ctx)
-        this.level.drawForeground(ctx)
+        const view = this.viewport
+        this.level.drawBackground(ctx, view)
+        this.level.drawForeground(ctx, view)
+        this.#dimOutsideArena(ctx, view)
 
         if (inRun) {
             this.enemies.forEach((e) => e.dead && e.draw(ctx))
@@ -143,7 +146,10 @@ class MyFriendBullet extends Tux.Game {
 
         // slow motion: drain the colour out of the world...
         const slow = this.slowmo.amount
-        Tux.draw.desaturate(ctx, WORLD.width, WORLD.height, slow)
+        ctx.save()
+        ctx.translate(view.x, view.y)
+        Tux.draw.desaturate(ctx, view.width, view.height, slow)
+        ctx.restore()
 
         // ...but keep bullets, lasers and the player in full colour
         if (inRun) {
@@ -153,8 +159,11 @@ class MyFriendBullet extends Tux.Game {
             this.fx.drawTexts(ctx)
         }
 
-        Tux.draw.vignette(ctx, WORLD.width, WORLD.height, slow)
-        Tux.draw.flash(ctx, WORLD.width, WORLD.height, '255, 0, 40', this.player.hurtFlash * 2)
+        ctx.save()
+        ctx.translate(view.x, view.y)
+        Tux.draw.vignette(ctx, view.width, view.height, slow)
+        Tux.draw.flash(ctx, view.width, view.height, '255, 0, 40', this.player.hurtFlash * 2)
+        ctx.restore()
 
         if (this.state === 'playing' || this.state === 'paused' || this.state === 'dying') {
             this.#drawHud(ctx)
@@ -290,6 +299,14 @@ class MyFriendBullet extends Tux.Game {
             x, y, angle: Math.atan2(velocity.y, velocity.x), spread: 0.6, count, speed: [100, 450],
             color: ['#b3122e', '#7a0b1f'], radius: [2, 4.5], life: [0.6, 1.4], gravity: 1400, drag: 1,
         })
+    }
+
+    // the scenery past the side doors is only for show: darken it so the arena edges read
+    #dimOutsideArena(ctx, view) {
+        ctx.fillStyle = 'rgba(5, 4, 10, 0.5)'
+        if (view.x < 0) ctx.fillRect(view.x, view.y, -view.x, view.height)
+        const right = view.x + view.width
+        if (right > WORLD.width) ctx.fillRect(WORLD.width, view.y, right - WORLD.width, view.height)
     }
 
     // ---------- aim + hud ----------

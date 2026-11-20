@@ -32,8 +32,6 @@ class Player extends Fighter {
         this.reloading = 0
         this.fireRate = 0.12
         this.fireCooldown = 0
-        this.timeSinceShot = 0
-        this.autoReloadDelay = 1.2 // touch only: reload by itself after you stop shooting
 
         this.dead = false
         this.flips = 0 // spin on double jump
@@ -67,7 +65,10 @@ class Player extends Fighter {
             this.flips = 0
         }
 
-        if (input.consume('jump') && this.jumpsLeft > 0) {
+        // a press always jumps; holding jump also jumps on landing and air-jumps at the top of the arc
+        const jumpPressed = input.consume('jump')
+        const jumpHeld = input.isDown('jump') && (this.onGround || this.velocity.y >= 0)
+        if ((jumpPressed || jumpHeld) && this.jumpsLeft > 0) {
             if (!this.onGround && this.jumpsLeft === this.maxJumps) {
                 // walked off a ledge, only the air jump is left
                 this.jumpsLeft--
@@ -103,7 +104,6 @@ class Player extends Fighter {
         this.invulnerable = Math.max(0, this.invulnerable - dt)
         this.hurtFlash = Math.max(0, this.hurtFlash - dt)
         this.fireCooldown = Math.max(0, this.fireCooldown - dt)
-        this.timeSinceShot += dt
 
         // weapon
         if (this.reloading > 0) {
@@ -116,15 +116,13 @@ class Player extends Fighter {
         else if (input.consume('reload') && this.ammo < this.magazineSize) {
             this.#startReload(sounds)
         }
-        else if (input.touch && !input.isDown('shoot') && this.ammo < this.magazineSize && this.timeSinceShot > this.autoReloadDelay) {
-            this.#startReload(sounds)
-        }
 
-        if (input.isDown('shoot') && this.reloading <= 0 && this.fireCooldown <= 0) {
+        // a press is one shot (touch taps / releases, quick clicks), holding is automatic fire
+        const shootPressed = input.consume('shoot')
+        if ((shootPressed || input.isDown('shoot')) && this.reloading <= 0 && this.fireCooldown <= 0) {
             if (this.ammo > 0) {
                 this.ammo--
                 this.fireCooldown = this.fireRate
-                this.timeSinceShot = 0
                 this.recoil = 1
 
                 const tip = this.gunTip

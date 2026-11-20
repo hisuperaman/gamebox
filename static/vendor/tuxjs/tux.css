@@ -1,6 +1,6 @@
 /*!
- * tux.js v1.0.0 - a small canvas game kit
- * by hisuperaman - https://github.com/hisuperaman
+ * tux.js v1.1.0 - a small canvas game kit
+ * by hisuperaman - https://hisuperaman.me
  */
 
 /*
@@ -490,6 +490,13 @@ body:not(.tux-in-game) .tux-touch {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.5s;
+}
+
+/* zones on the left side glow towards the middle of the screen instead */
+.tux-stick-left::before {
+    background: linear-gradient(to left, rgba(var(--tux-hint-rgb), 0.02), rgba(var(--tux-hint-rgb), 0.22));
+    border-left: none;
+    border-right: 2px dashed rgba(var(--tux-hint-rgb), 0.45);
 }
 
 .tux-stick-zone.tux-hinting::before {

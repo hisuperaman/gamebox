@@ -1,21 +1,21 @@
 /*!
- * tux.js v1.0.0 - a small canvas game kit
- * by hisuperaman - https://github.com/hisuperaman
+ * tux.js v1.1.0 - a small canvas game kit
+ * by hisuperaman - https://hisuperaman.me
  */
 
 // ---------- core.js ----------
 /*
  * tux.js - a small canvas game kit
- * by hisuperaman - https://github.com/hisuperaman
+ * by hisuperaman - https://hisuperaman.me
  *
  * Every library file adds itself to the global `Tux` object and keeps
  * everything else private, so games can freely name their own classes
  * (Game, Player, Particle...) without clashing with the library.
  */
 const Tux = {
-    version: '1.0.0',
+    version: '1.1.0',
     author: 'hisuperaman',
-    url: 'https://github.com/hisuperaman',
+    url: 'https://hisuperaman.me',
 }
 
 // lets tux.css style the page (full screen, no scroll); add class="tux-page" to <html> to avoid a flash
@@ -344,8 +344,9 @@ Tux.device = {
      * visible while a run is going (body.tux-in-game).
      *
      *   const touch = new Tux.TouchControls({ input })
-     *   touch.addMoveStick()                      // fixed stick: left/right/down + flick up to jump
+     *   touch.addMoveStick()                      // fixed stick: left/right/down + up to jump
      *   touch.addAimStick({ hint: 'Move your thumb here<br>to aim &amp; shoot' })
+     *   touch.addAimStick({ fire: 'release' })    // drag to aim, lift to fire once, tap to shoot a spot
      *   touch.addButton({ id: 'slowmo', icon: 'hourglass', type: 'toggle', action: 'slowmo', ring: true,
      *                     position: { right: 150, bottom: 110 } })
      *   touch.addButton({ id: 'pause', icon: 'pause', dock: true, onPress: () => game.pause() })
@@ -380,7 +381,7 @@ Tux.device = {
             if (!this.enabled) return null
 
             const zone = document.createElement('div')
-            zone.className = `tux-stick-zone tux-stick-${mode}`
+            zone.className = `tux-stick-zone tux-stick-${mode}${'left' in area ? ' tux-stick-left' : ''}`
             zone.id = `tux-stick-${id}`
             applyPosition(zone, area)
             zone.style.setProperty('--tux-hint-rgb', hintColor)
@@ -424,9 +425,10 @@ Tux.device = {
                 zone.classList.remove('tux-hinting')
             }
 
-            nipple.on('start', () => {
+            nipple.on('start', (evt, data) => {
                 stick.hideHint()
-                if (onStart) onStart()
+                // where the thumb landed, in client pixels like input.pointer
+                if (onStart) onStart({ x: data.position.x - window.scrollX, y: data.position.y - window.scrollY })
             })
             nipple.on('move', (evt, data) => {
                 if (!onMove) return
@@ -446,17 +448,19 @@ Tux.device = {
             return stick
         }
 
-        // fixed movement stick: holds left/right/down actions, a flick up presses jump
-        addMoveStick({ id = 'move', left = 'left', right = 'right', down = 'down', jump = 'jump', area = { left: 0, bottom: 0, width: '170px', height: '170px' }, ...options } = {}) {
+        // movement stick: holds left/right/down actions; up presses jump once and holds it while kept up.
+        // mode 'floating' with a bigger area (e.g. the left half) lets the thumb land anywhere.
+        addMoveStick({ id = 'move', mode = 'fixed', left = 'left', right = 'right', down = 'down', jump = 'jump', area = { left: 0, bottom: 0, width: '170px', height: '170px' }, ...options } = {}) {
             const input = this.input
             let jumpArmed = true
 
             return this.addStick({
-                id, mode: 'fixed', area, ...options,
+                id, mode, area, ...options,
                 onMove: ({ x, y }) => {
                     input.hold(left, x < -0.3, 'touch')
                     input.hold(right, x > 0.3, 'touch')
                     if (down) input.hold(down, y < -0.7, 'touch')
+                    if (jump) input.hold(jump, y > 0.6, 'touch')
 
                     if (jump && y > 0.6 && jumpArmed) {
                         input.press(jump)
@@ -468,24 +472,90 @@ Tux.device = {
                     input.hold(left, false, 'touch')
                     input.hold(right, false, 'touch')
                     if (down) input.hold(down, false, 'touch')
+                    if (jump) input.hold(jump, false, 'touch')
                     jumpArmed = true
                 },
             })
         }
 
-        // floating aim stick over the right half: sets input.aimAngle and holds `shoot` past the dead zone
-        addAimStick({ id = 'aim', shoot = 'shoot', fireAt = 0.3, color = 'red', area = { top: '0', right: '0', bottom: '0', width: '50%' }, ...options } = {}) {
+        /*
+         * floating aim stick over the right half, sets input.aimAngle past the dead zone (fireAt).
+         * fire: 'hold'    - holds `shoot` while dragged past the dead zone (automatic fire)
+         *       'release' - dragging only aims; lifting the thumb presses `shoot` once, using the aim
+         *                   from just before the lift so the thumb leaving the glass doesn't skew it.
+         *                   Drag back into the dead zone to cancel. A quick tap points input.pointer
+         *                   at the tapped spot and presses `shoot` once.
+         * Switch later with stick.setFire('hold' | 'release'), read it with stick.fire.
+         */
+        addAimStick({ id = 'aim', shoot = 'shoot', fire = 'hold', fireAt = 0.3, tapMs = 250, color = 'red', area = { top: '0', right: '0', bottom: '0', width: '50%' }, ...options } = {}) {
+            const checkFire = (mode) => {
+                if (!['hold', 'release'].includes(mode)) throw new Error(`addAimStick: fire must be 'hold' or 'release', got '${mode}'`)
+            }
+            checkFire(fire)
             const input = this.input
-            return this.addStick({
+            const settleMs = 60
+            let touchStart = null // { time, x, y } in client pixels
+            let samples = []      // recent { time, angle, force }, for the pre-lift aim
+            let dragged = false
+
+            const stick = this.addStick({
                 id, mode: 'floating', area, color, ...options,
+                onStart: ({ x, y }) => {
+                    touchStart = { time: performance.now(), x, y }
+                    samples = []
+                    dragged = false
+                },
                 onMove: ({ angle, force }) => {
-                    input.setAimAngle(angle)
-                    if (shoot) input.hold(shoot, force > fireAt, 'touch')
+                    if (fire === 'hold') {
+                        input.setAimAngle(angle)
+                        if (shoot) input.hold(shoot, force > fireAt, 'touch')
+                        return
+                    }
+                    const now = performance.now()
+                    samples.push({ time: now, angle, force })
+                    samples = samples.filter((s) => now - s.time < 300)
+                    if (force > fireAt) {
+                        dragged = true
+                        input.setAimAngle(angle)
+                    }
                 },
                 onEnd: () => {
-                    if (shoot) input.hold(shoot, false, 'touch')
+                    if (fire === 'hold') {
+                        if (shoot) input.hold(shoot, false, 'touch')
+                        return
+                    }
+                    if (!shoot || !touchStart) return
+
+                    const now = performance.now()
+                    if (dragged) {
+                        const last = samples[samples.length - 1]
+                        const armed = samples.filter((s) => s.force > fireAt)
+                        const settled = armed.filter((s) => now - s.time >= settleMs)
+                        const aim = settled[settled.length - 1] || armed[0]
+                        if (aim && last.force > fireAt) {
+                            input.setAimAngle(aim.angle)
+                            input.press(shoot)
+                        }
+                    }
+                    else if (now - touchStart.time <= tapMs) {
+                        input.pointer.x = touchStart.x
+                        input.pointer.y = touchStart.y
+                        input.setAimAngle(null)
+                        input.press(shoot)
+                    }
+                    touchStart = null
                 },
             })
+            if (!stick) return null
+
+            stick.fire = fire
+            stick.setFire = (mode) => {
+                checkFire(mode)
+                fire = stick.fire = mode
+                if (shoot) input.hold(shoot, false, 'touch') // don't leave automatic fire stuck on
+                touchStart = null // a touch already in progress doesn't fire on release
+            }
+            return stick
         }
 
         /*
@@ -1584,6 +1654,10 @@ Tux.theme = {
      *       render(ctx) { ... }             // draw in world units (world.width x world.height)
      *   }
      *
+     * fit: 'letterbox' keeps black bars where the screen's shape differs from the world's,
+     *      'extend' shows the area around the world instead; draw scenery over this.viewport there.
+     *      The world itself (gameplay) stays the same size either way.
+     *
      *   const game = new MyGame({ world: { width: 1280, height: 720 }, bindings: { ... } })
      *   game.on('gameover', (result) => ...)
      *   game.start({ seed })
@@ -1592,20 +1666,23 @@ Tux.theme = {
      * Events: start, pause, resume, quit, gameover
      */
     class Game extends Tux.Emitter {
-        constructor({ canvas = null, world = { width: 1280, height: 720 }, fps = 60, background = 'black', bindings = {}, pauseAction = 'pause', pauseOnHide = true, pauseDim = 0.45 } = {}) {
+        constructor({ canvas = null, world = { width: 1280, height: 720 }, fit = 'letterbox', fps = 60, background = 'black', bindings = {}, pauseAction = 'pause', pauseOnHide = true, pauseDim = 0.45 } = {}) {
             super()
 
             this.canvas = canvas || document.body.appendChild(Tux.el('canvas', { className: 'tux-canvas' }))
             this.canvas.classList.add('tux-canvas')
             this.ctx = this.canvas.getContext('2d')
 
+            if (!['letterbox', 'extend'].includes(fit)) throw new Error(`Tux.Game: fit must be 'letterbox' or 'extend', got '${fit}'`)
             this.world = world
+            this.fit = fit
             this.background = background
             this.pauseAction = pauseAction
             this.pauseDim = pauseDim
 
             this.size = { width: 0, height: 0 }
             this.view = { scale: 1, x: 0, y: 0 }
+            this.viewport = { x: 0, y: 0, width: world.width, height: world.height } // whole screen, in world units
 
             this.input = new Tux.Input({ target: this.canvas, bindings: { [pauseAction]: ['KeyP', 'Escape'], ...bindings } })
 
@@ -1717,6 +1794,12 @@ Tux.theme = {
                 x: (width - this.world.width * scale) / 2,
                 y: (height - this.world.height * scale) / 2,
             }
+            this.viewport = {
+                x: -this.view.x / scale,
+                y: -this.view.y / scale,
+                width: width / scale,
+                height: height / scale,
+            }
         }
 
         #loop = (timestamp) => {
@@ -1758,8 +1841,9 @@ Tux.theme = {
             ctx.save()
             ctx.translate(this.view.x, this.view.y)
             ctx.scale(this.view.scale, this.view.scale)
+            const clip = this.fit === 'extend' ? this.viewport : { x: 0, y: 0, width, height }
             ctx.beginPath()
-            ctx.rect(0, 0, width, height)
+            ctx.rect(clip.x, clip.y, clip.width, clip.height)
             ctx.clip()
 
             if (this.shakeAmount > 0) {
@@ -1771,7 +1855,7 @@ Tux.theme = {
 
             if (this.state === 'paused' && this.pauseDim) {
                 ctx.fillStyle = `rgba(0,0,0,${this.pauseDim})`
-                ctx.fillRect(-50, -50, width + 100, height + 100)
+                ctx.fillRect(clip.x - 50, clip.y - 50, clip.width + 100, clip.height + 100)
             }
 
             ctx.restore()
