@@ -1,0 +1,631 @@
+/*!
+ * tux.js v1.0.0 - a small canvas game kit
+ * by hisuperaman - https://github.com/hisuperaman
+ */
+
+/*
+ * tux.js styles - by hisuperaman
+ * Theme a game by overriding these variables in your own css:
+ *   :root { --tux-accent: #22c55e; }
+ */
+:root {
+    --tux-accent: #ff3b5c;
+    --tux-accent-2: #1fb5a6;
+    --tux-gold: #ffd35c;
+    --tux-text: #ffffff;
+    --tux-muted: #aaaaaa;
+    --tux-panel-bg: rgba(14, 10, 24, 0.92);
+    --tux-btn-bg: #2a2140;
+    --tux-input-bg: #1d1730;
+    --tux-input-border: #3b3155;
+    --tux-ok: #5ce0a0;
+    --tux-error: #ff6b81;
+    --tux-overlay-bg: radial-gradient(circle at center, rgba(20, 10, 35, 0.55), rgba(0, 0, 0, 0.85));
+    --tux-font-display: 'Bungee', Arial, sans-serif;
+    --tux-font-body: 'Inter', Arial, sans-serif;
+    --tux-ring-color: #3fa9f5;
+    --tux-ring-fill: rgba(20, 40, 70, 0.85);
+    --tux-ring-active-fill: rgba(63, 169, 245, 0.9);
+    --tux-ring-active-color: #bfe6ff;
+}
+
+/* ---------- page ---------- */
+
+.tux-page,
+.tux-page * {
+    box-sizing: border-box;
+}
+
+html.tux-page,
+.tux-page body {
+    height: 100%;
+}
+
+.tux-page body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    font-family: var(--tux-font-body);
+    color: var(--tux-text);
+}
+
+.tux-canvas {
+    display: block;
+}
+
+body.tux-in-game .tux-canvas {
+    cursor: none;
+}
+
+.tux-hidden {
+    display: none !important;
+}
+
+svg.lucide {
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0;
+}
+
+/* ---------- menus ---------- */
+
+.tux-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background: var(--tux-overlay-bg);
+    z-index: 10;
+}
+
+.tux-panel {
+    width: 100%;
+    max-width: 420px;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 28px 28px 18px;
+    background: var(--tux-panel-bg);
+    border: 2px solid var(--tux-accent);
+    border-radius: 14px;
+    box-shadow: 0 0 40px color-mix(in srgb, var(--tux-accent) 35%, transparent);
+    text-align: center;
+}
+
+.tux-panel.tux-wide {
+    max-width: 560px;
+}
+
+.tux-panel h1,
+.tux-panel h2 {
+    font-family: var(--tux-font-display);
+    font-weight: normal;
+    margin: 0 0 6px;
+    letter-spacing: 1px;
+}
+
+.tux-panel h1 {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.tux-panel h1 span {
+    color: var(--tux-accent);
+}
+
+.tux-panel h2 {
+    font-size: 34px;
+    color: var(--tux-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tux-tagline {
+    color: #bbb;
+    margin: 6px 0 20px;
+    font-size: 14px;
+}
+
+.tux-panel label {
+    display: block;
+    text-align: left;
+    font-size: 13px;
+    color: var(--tux-muted);
+    margin-bottom: 6px;
+}
+
+.tux-panel input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 18px;
+    font-family: inherit;
+    color: var(--tux-text);
+    background: var(--tux-input-bg);
+    border: 2px solid var(--tux-input-border);
+    border-radius: 8px;
+    outline: none;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.tux-panel input:focus {
+    border-color: var(--tux-accent-2);
+}
+
+.tux-error-text {
+    min-height: 18px;
+    color: var(--tux-error);
+    font-size: 13px;
+    text-align: left;
+    margin: 4px 0 8px;
+}
+
+.tux-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px;
+    font-family: var(--tux-font-display);
+    font-size: 18px;
+    color: var(--tux-text);
+    background: var(--tux-btn-bg);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.tux-btn:hover {
+    filter: brightness(1.2);
+}
+
+.tux-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.tux-btn.tux-primary {
+    background: var(--tux-accent);
+}
+
+.tux-btn.tux-small {
+    width: fit-content;
+    margin: 12px auto 0;
+    padding: 6px 14px;
+    font-family: var(--tux-font-body);
+    font-size: 13px;
+    background: transparent;
+    color: #999;
+}
+
+.tux-row {
+    display: flex;
+    gap: 10px;
+}
+
+.tux-help {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 12px;
+    margin-top: 18px;
+    font-size: 13px;
+    color: #ccc;
+    text-align: left;
+}
+
+.tux-help b {
+    color: var(--tux-accent-2);
+}
+
+.tux-note {
+    font-size: 12px;
+    color: #888;
+    margin: 14px 0 0;
+}
+
+.tux-ios-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    font-size: 12px;
+    text-align: left;
+    color: #cfe;
+    background: color-mix(in srgb, var(--tux-accent-2) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tux-accent-2) 40%, transparent);
+    border-radius: 8px;
+}
+
+.tux-big-score {
+    font-family: var(--tux-font-display);
+    font-size: 56px;
+    color: var(--tux-gold);
+    line-height: 1.1;
+}
+
+.tux-stats {
+    color: #bbb;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.tux-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: var(--tux-muted);
+}
+
+.tux-status.tux-ok {
+    color: var(--tux-ok);
+}
+
+.tux-status.tux-error {
+    color: var(--tux-error);
+}
+
+.tux-status .lucide-loader-circle {
+    animation: tux-spin 1s linear infinite;
+}
+
+@keyframes tux-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- leaderboard ---------- */
+
+.tux-board {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.tux-board td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--tux-btn-bg);
+    text-align: left;
+}
+
+.tux-board td:first-child {
+    width: 44px;
+    color: #888;
+    font-family: var(--tux-font-display);
+}
+
+.tux-board td:nth-child(2) {
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.tux-board td:nth-child(3) {
+    font-family: var(--tux-font-display);
+    color: var(--tux-gold);
+    text-align: right;
+}
+
+.tux-board td:nth-child(4) {
+    color: #888;
+    font-size: 12px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.tux-board tr.tux-me td {
+    background: color-mix(in srgb, var(--tux-accent-2) 18%, transparent);
+}
+
+.tux-board td.tux-empty {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+}
+
+/* ---------- branding ---------- */
+
+.tux-badge {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 6px;
+    margin: 14px auto 0;
+    font-size: 11px;
+    color: #8a8598;
+    text-decoration: none;
+    opacity: 0.85;
+}
+
+.tux-badge:hover {
+    opacity: 1;
+    color: #c9c4d6;
+}
+
+.tux-badge b {
+    color: #d8d3e4;
+    font-weight: 600;
+}
+
+.tux-badge .tux-logo {
+    width: 18px;
+    height: 18px;
+}
+
+.tux-wordmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-family: var(--tux-font-display);
+    font-size: 56px;
+    line-height: 1;
+    color: #f4f1ea;
+}
+
+.tux-wordmark b {
+    font-weight: normal;
+    color: #ff8a33;
+    background: linear-gradient(135deg, #ffc23d, #ff5a3c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tux-wordmark .tux-logo {
+    width: 72px;
+    height: 72px;
+    filter: drop-shadow(0 6px 18px rgba(255, 110, 60, 0.35));
+}
+
+.tux-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #1b1730, #07060c);
+    transition: opacity 0.4s;
+    cursor: pointer;
+}
+
+.tux-splash.tux-splash-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tux-splash-inner {
+    text-align: center;
+    animation: tux-splash-in 0.6s ease-out both;
+}
+
+.tux-splash-by {
+    margin-top: 10px;
+    font-family: var(--tux-font-body);
+    font-size: 15px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #9a94ab;
+}
+
+.tux-splash-bar {
+    width: 160px;
+    height: 3px;
+    margin: 22px auto 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.tux-splash-bar i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #ffc23d, #ff5a3c);
+    animation: tux-splash-bar var(--tux-splash-time, 1600ms) linear both;
+}
+
+@keyframes tux-splash-in {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+}
+
+@keyframes tux-splash-bar {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+/* ---------- touch controls ---------- */
+
+.tux-touch {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+
+body:not(.tux-in-game) .tux-touch {
+    visibility: hidden;
+}
+
+.tux-touch > * {
+    pointer-events: auto;
+}
+
+.tux-stick-zone {
+    position: absolute;
+    z-index: 4;
+}
+
+/* hint: tint the zone and show a short message, e.g. for the first seconds of a run */
+.tux-stick-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(var(--tux-hint-rgb), 0.02), rgba(var(--tux-hint-rgb), 0.22));
+    border-left: 2px dashed rgba(var(--tux-hint-rgb), 0.45);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tux-stick-zone.tux-hinting::before {
+    opacity: 1;
+    animation: tux-hint-glow 1.4s ease-in-out infinite;
+}
+
+@keyframes tux-hint-glow {
+    50% {
+        filter: brightness(1.6);
+    }
+}
+
+.tux-stick-hint {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    color: white;
+    text-shadow: 0 1px 4px black;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tux-stick-hint svg.lucide {
+    width: 1.8rem;
+    height: 1.8rem;
+    color: rgb(var(--tux-hint-rgb));
+}
+
+.tux-stick-zone.tux-hinting .tux-stick-hint {
+    opacity: 1;
+}
+
+/* nipplejs sticks, see-through so they don't hide the game */
+.tux-touch .nipple .back {
+    opacity: 0.18 !important;
+}
+
+.tux-touch .nipple .front {
+    opacity: 0.45 !important;
+}
+
+.tux-touch-btn {
+    all: unset;
+    /* `all: unset` would inherit pointer-events: none from .tux-touch */
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 6;
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 100%;
+    color: white;
+    background-color: rgba(161, 161, 161, 0.35);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    box-sizing: border-box;
+}
+
+.tux-touch-btn svg.lucide {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.tux-touch-btn:active {
+    filter: brightness(140%);
+}
+
+.tux-touch-btn.tux-active {
+    background-color: var(--tux-ring-active-fill);
+}
+
+.tux-touch-btn.tux-locked {
+    opacity: 0.45;
+}
+
+/* button with a progress ring, e.g. a slow-mo meter */
+.tux-touch-btn.tux-btn-ring {
+    width: 4rem;
+    height: 4rem;
+    border: none;
+    background:
+        radial-gradient(circle, var(--tux-ring-fill) 62%, transparent 63%),
+        conic-gradient(var(--tux-ring-color) var(--tux-progress, 360deg), rgba(255, 255, 255, 0.15) 0);
+}
+
+.tux-touch-btn.tux-btn-ring.tux-active {
+    background:
+        radial-gradient(circle, var(--tux-ring-active-fill) 62%, transparent 63%),
+        conic-gradient(var(--tux-ring-active-color) var(--tux-progress, 360deg), rgba(255, 255, 255, 0.15) 0);
+    box-shadow: 0 0 18px var(--tux-ring-active-fill);
+}
+
+/* small buttons (pause, fullscreen) in the bottom middle, away from the thumbs */
+.tux-touch-dock {
+    position: absolute;
+    left: 50%;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 6;
+}
+
+.tux-touch-btn.tux-btn-small {
+    position: static;
+    width: 2.4rem;
+    height: 2.4rem;
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+.tux-touch-btn.tux-btn-small svg.lucide {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* ---------- rotate your phone ---------- */
+
+.tux-orientation {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 24px;
+    padding: 16px;
+    z-index: 9999;
+}

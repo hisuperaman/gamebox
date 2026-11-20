@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodge Racing 2</title>
+
+    <link rel="stylesheet" href="{{url_for('.static', filename='css/style.css')}}">
+</head>
+<body>
+
+    <div id="loadingScreen">
+        <div id="loader"></div>
+    </div>
+
+    <div class="canvasContainer" id="mainContent">
+        <canvas id="myCanvas"></canvas>
+
+        <canvas id="scoreBoard"></canvas>
+    </div>
+    
+    <script src="{{url_for('.static', filename='js/controls.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/road.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/car.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/button.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/utils.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/main.js')}}"></script>
+</body>
+</html>

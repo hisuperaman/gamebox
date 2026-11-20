@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Game</title>
+
+    <style>
+        body {
+            background-color: black;
+            box-sizing: border-box;
+            margin: 0;
+
+            display: flex;
+            justify-content: center;
+
+            user-select: none;
+        }
+
+        #myCanvas {
+            width: 80vw;
+            height: 100vh;
+        }
+
+        #landscape-warning {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 24px;
+            z-index: 9999;
+        }
+
+        #joystick-container {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            width: 200px;
+            height: 200px;
+        }
+
+
+        #loadingScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        #loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .controlButton {
+            all: unset;
+            position: absolute;
+            background-color: rgba(161, 161, 161, 0.8);
+            width: 4rem;
+            height: 4rem;
+            text-align: center;
+            border-radius: 100%;
+        }
+
+        #actionButton {
+            right: 80px;
+            bottom: 60px;
+        }
+
+        #jumpButton {
+            right: 150px;
+            bottom: 30px;
+        }
+
+        .controlButton:active {
+            filter: brightness(110%);
+        }
+
+        @media screen and (max-width: 1000px) {
+            #myCanvas {
+                width: 70vw;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loadingScreen">
+        <div id="loader"></div>
+    </div>
+
+    <canvas id="myCanvas"></canvas>
+
+    <div id="joystick-container"></div>
+    <div id="landscape-warning">Please switch to landscape mode for the best experience.</div>
+
+    <button class="controlButton" id="actionButton">A</button>
+    <button class="controlButton" id="jumpButton">J</button>
+
+    <script>
+        function isTouchable() {
+            return (
+                'ontouchstart' in window ||
+                navigator.maxTouchPoints > 0 ||
+                navigator.msMaxTouchPoints > 0 ||
+                window.matchMedia('(pointer: coarse)').matches
+            );
+        }
+
+        function checkOrientation() {
+            const joystickContainer = document.getElementById('joystick-container');
+            const actionButton = document.getElementById('actionButton');
+            const jumpButton = document.getElementById('jumpButton');
+
+            const safeArea = window.visualViewport.height - document.documentElement.clientHeight;
+            // this 30 is the bottom of joystickContainer
+            const bottom = 30 - safeArea
+            joystickContainer.style.bottom = `${bottom}px`;
+
+            const actionButtonBottom = 60 - safeArea
+            actionButton.style.bottom = `${actionButtonBottom}px`;
+            const jumpButtonBottom = 30 - safeArea
+            jumpButton.style.bottom = `${jumpButtonBottom}px`;
+
+            if (!isTouchable()) {
+                joystickContainer.style.display = 'none';
+                actionButton.style.display = 'none';
+                jumpButton.style.display = 'none';
+            }
+
+            const warning = document.getElementById('landscape-warning');
+            if (window.innerHeight > window.innerWidth) {
+                warning.style.display = 'flex';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.2/nipplejs.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="{{url_for('.static', filename='js/index.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/Sprite.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/Note.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/NoteScreen.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/utils.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/CollisionBlock.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/data/collisions.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/Game.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/Controls.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/Player.js')}}"></script>
+</body>
+
+</html>

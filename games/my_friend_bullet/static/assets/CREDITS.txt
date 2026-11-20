@@ -1,0 +1,12 @@
+My Friend Bullet - asset credits
+All sounds are CC0 (public domain) from OpenGameArt.org, trimmed/converted for the game.
+
+sfx_shoot.mp3, sfx_enemy_shoot.mp3  - "Gunshots"                    https://opengameart.org/content/gunshots
+sfx_reload.mp3                      - "Gun Reload Sounds"            https://opengameart.org/content/gun-reload-sounds
+sfx_hit.mp3, sfx_kill.mp3           - "37 hits/punches"              https://opengameart.org/content/37-hitspunches
+sfx_hurt.mp3                        - "15 vocal male strain/hurt"    https://opengameart.org/content/15-vocal-male-strainhurtpainjump-sounds
+sfx_slowmo.mp3                      - "Air Whoosh"                   https://opengameart.org/content/air-whoosh
+bgm.mp3                             - "5 Chiptunes (Action)" Level 2 by Juhani Junkala  https://opengameart.org/content/5-chiptunes-action
+
+Font: Bungee (SIL Open Font License) via Google Fonts.
+Characters, level and effects are drawn in code.

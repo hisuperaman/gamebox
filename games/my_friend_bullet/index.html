@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" class="tux-page">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My Friend Bullet">
+    <meta name="theme-color" content="#000000">
+    <title>My Friend Bullet</title>
+    <link rel="manifest" href="{{url_for('.static', filename='assets/manifest.json')}}">
+    <link rel="apple-touch-icon" href="{{url_for('.static', filename='assets/icons/icon-192.png')}}">
+    <link href="{{url_for('.static', filename='assets/icons/icon.svg')}}" rel="icon" type="image/svg+xml">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- tux.js v1.0.0 by hisuperaman (built copy in static/vendor/tuxjs) -->
+    <link rel="stylesheet" href="{{url_for('static', filename='vendor/tuxjs/tux.css')}}">
+</head>
+
+<body data-sfx-path="{{url_for('.static', filename='assets/sfx/')}}">
+
+    <!-- tux.js + its two helpers: nipplejs (phone sticks), lucide (icons) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.2/nipplejs.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="{{url_for('static', filename='vendor/tuxjs/tux.js')}}"></script>
+
+    <script src="{{url_for('.static', filename='js/rules.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/level.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/fighter.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/player.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/enemy.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/game.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/main.js')}}"></script>
+</body>
+
+</html>
