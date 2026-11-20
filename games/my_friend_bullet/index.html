@@ -12,21 +12,22 @@
     <title>My Friend Bullet</title>
     <link rel="manifest" href="{{url_for('.static', filename='assets/manifest.json')}}">
     <link rel="apple-touch-icon" href="{{url_for('.static', filename='assets/icons/icon-192.png')}}">
-    <link href="{{url_for('.static', filename='assets/icons/icon.svg')}}" rel="icon" type="image/svg+xml">
+    <link href="{{url_for('.static', filename='assets/icons/favicon-48.png')}}" rel="icon" type="image/png" sizes="48x48">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- everything is self-hosted (no CDNs) so the same page also works offline inside the android app -->
+    <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/fonts.css')}}">
 
     <!-- tux.js v1.0.0 by hisuperaman (built copy in static/vendor/tuxjs) -->
     <link rel="stylesheet" href="{{url_for('static', filename='vendor/tuxjs/tux.css')}}">
 </head>
 
-<body data-sfx-path="{{url_for('.static', filename='assets/sfx/')}}">
+<!-- api-base: the leaderboard endpoints. The website uses its own server; the android build sets a full https:// url -->
+<body data-sfx-path="{{url_for('.static', filename='assets/sfx/')}}"
+      data-api-base="{{ api_base or '/api/my_friend_bullet' }}">
 
     <!-- tux.js + its two helpers: nipplejs (phone sticks), lucide (icons) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.2/nipplejs.min.js"></script>
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <script src="{{url_for('static', filename='vendor/nipplejs/nipplejs.min.js')}}"></script>
+    <script src="{{url_for('static', filename='vendor/lucide/lucide.min.js')}}"></script>
     <script src="{{url_for('static', filename='vendor/tuxjs/tux.js')}}"></script>
 
     <script src="{{url_for('.static', filename='js/rules.js')}}"></script>

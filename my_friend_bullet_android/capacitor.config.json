@@ -1,0 +1,12 @@
+{
+    "appId": "com.hisuperaman.myfriendbullet",
+    "appName": "My Friend Bullet",
+    "webDir": "www",
+    "backgroundColor": "#130d21",
+    "server": {
+        "androidScheme": "https"
+    },
+    "android": {
+        "allowMixedContent": false
+    }
+}

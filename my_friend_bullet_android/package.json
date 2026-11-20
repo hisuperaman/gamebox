@@ -1,0 +1,23 @@
+{
+  "name": "my-friend-bullet-android",
+  "version": "1.0.0",
+  "description": "Android (Capacitor) build of My Friend Bullet; the game itself lives in ../games/my_friend_bullet",
+  "scripts": {
+    "build": "node build-www.mjs",
+    "sync": "node build-www.mjs && cap sync android",
+    "open": "cap open android",
+    "assets": "npx --yes @capacitor/assets generate --android --iconBackgroundColor \"#22163a\" --iconBackgroundColorDark \"#22163a\" --splashBackgroundColor \"#130d21\" --splashBackgroundColorDark \"#130d21\""
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2"
+  },
+  "private": true
+}

@@ -21,7 +21,7 @@ A collection of small browser games, served by one Flask app. Pick a game on the
 | Snake Water Gun | `games/swg` |
 | Flappy Block | `games/flappy_block` |
 
-**My Friend Bullet** is a slow-motion side-scrolling shooter built with [tux.js](static/vendor/tuxjs/tux.js), a small canvas game kit. It has an online leaderboard, and the server re-checks every submitted score.
+**My Friend Bullet** is a slow-motion side-scrolling shooter built with [tux.js](static/vendor/tuxjs/tux.js), a small canvas game kit. It has an online leaderboard, and the server re-checks every submitted score. It also ships as an offline Android app (no leaderboard, just your own high score), built from the same game code: see [`my_friend_bullet_android/`](my_friend_bullet_android/README.md).
 
 ## Running locally
 

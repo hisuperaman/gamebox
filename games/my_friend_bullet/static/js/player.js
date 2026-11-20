@@ -22,6 +22,9 @@ class Player extends Fighter {
         this.jumpVelocity = 830
         this.maxJumps = 2
         this.jumpsLeft = this.maxJumps
+        this.normalMaxFall = this.maxFall
+        this.fastFallSpeed = 2300
+        this.fastFallAccel = 4200
 
         this.magazineSize = 14
         this.ammo = this.magazineSize
@@ -79,6 +82,13 @@ class Player extends Fighter {
 
         if (input.isDown('down') && this.standingOnPlatform(level)) {
             this.dropDown()
+        }
+
+        // fast fall: holding down in the air cancels the rise and pulls you to the ground quicker
+        const fastFalling = input.isDown('down') && !this.onGround
+        this.maxFall = fastFalling ? this.fastFallSpeed : this.normalMaxFall
+        if (fastFalling) {
+            this.velocity.y = Math.max(this.velocity.y, 0) + this.fastFallAccel * dt
         }
 
         this.applyPhysics(dt, level)

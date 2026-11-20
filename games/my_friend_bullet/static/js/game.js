@@ -165,11 +165,22 @@ class MyFriendBullet extends Tux.Game {
     // ---------- game logic ----------
 
     #updateTouchUi() {
-        const button = this.touch && this.touch.buttons.slowmo
-        if (!button) return
-        button.setActive(this.input.isToggled('slowmo'))
-        button.setLocked(this.slowmo.locked)
-        button.setProgress(this.slowmo.ratio)
+        if (!this.touch) return
+        const slowmo = this.touch.buttons.slowmo
+        if (slowmo) {
+            slowmo.setActive(this.input.isToggled('slowmo'))
+            slowmo.setLocked(this.slowmo.locked)
+            slowmo.setProgress(this.slowmo.ratio)
+        }
+        // reload: ring shows ammo left (or reload progress); dimmed while the magazine is full
+        const reload = this.touch.buttons.reload
+        const p = this.player
+        if (reload && p) {
+            const reloading = p.reloading > 0
+            reload.setActive(reloading)
+            reload.setLocked(!reloading && p.ammo >= p.magazineSize)
+            reload.setProgress(reloading ? 1 - p.reloading / p.reloadTime : p.ammo / p.magazineSize)
+        }
     }
 
     #spawnEnemies() {
