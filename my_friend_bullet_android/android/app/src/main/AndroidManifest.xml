@@ -31,4 +31,8 @@
     </application>
 
     <!-- No permissions: the game is fully offline (no INTERNET permission on purpose) -->
+
+    <!-- sensorLandscape implies a required landscape screen, which hides the app on Play
+         for devices that don't report one; it still runs in landscape everywhere -->
+    <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
 </manifest>

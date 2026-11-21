@@ -69,7 +69,7 @@ Play Console will also ask for a privacy policy URL and the Data safety form. Th
 
 ## Icons and splash
 
-`assets/icon-only.png` (1024×1024) is the game's thumbnail art (the player and the title), also used for the splash (`logo.png`). `icon-foreground.png` is the same art pulled into the middle, so Android's round/squircle icon masks don't cut off the title. After changing them:
+`assets/icon-only.png` (1024×1024) is the game's thumbnail art (the player and the title), also used for the splash (`logo.png`). `icon-foreground.png` is the same full-bleed art (no padding or border), so the picture fills the whole launcher icon; the title still fits inside round masks. After changing them:
 
 ```bash
 npm run assets
